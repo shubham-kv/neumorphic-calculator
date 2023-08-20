@@ -1,0 +1,26 @@
+
+.calculator {
+	width: max-content;
+	padding: 1.75rem;
+	margin-top: 80px;
+	border-radius: 1.5rem;
+
+	transition: all ease-out 0.2s;
+	background-color: var(--shade-intermediate);
+	box-shadow:
+		-8px -8px 28px var(--shade-light),
+		8px 8px 28px var(--shade-dark)
+	;
+
+	.outputWrapper {
+		margin-bottom: 2rem;
+	}
+
+	.inputWrapper {
+		display: grid;
+		grid-template-columns: repeat(4, 4rem);
+		gap: 1.5rem;
+
+		user-select: none;
+	}
+}

@@ -1,0 +1,22 @@
+
+.wrapper {
+	border-radius: 1rem;
+	padding: 1.4rem;
+
+	box-shadow:
+		-8px -8px 28px var(--shade-light) inset,
+		8px 8px 28px var(--shade-dark) inset,
+	;
+
+	.text {
+		margin: 0;
+		font-size: xx-large;
+		text-align: right;
+		color: var(--primary-color);
+
+		&::selection {
+			color: var(--on-primary-color);
+			background-color: var(--primary-color);
+		}
+	}
+}
