@@ -1,18 +1,39 @@
+@import '../../styles/mixins';
 
 .wrapper {
 	border-radius: 1rem;
-	padding: 1.4rem;
+	padding: 0.9rem;
 
 	box-shadow:
-		-8px -8px 28px var(--shade-light) inset,
-		8px 8px 28px var(--shade-dark) inset,
+		calc(-1 * var(--cell-shadow-offset)) calc(-1 * var(--cell-shadow-offset)) var(--cell-shadow-spread) var(--shade-light) inset,
+		var(--cell-shadow-offset) var(--cell-shadow-offset) var(--cell-shadow-spread) var(--shade-dark) inset
 	;
+
+	@include xxs {
+		padding: 1rem;
+	}
+
+	@include xs {
+		padding: 1.2rem;
+	}
+
+	@include sm {
+		padding: 1.4rem;
+	}
 
 	.text {
 		margin: 0;
-		font-size: xx-large;
+		font-size: larger;
 		text-align: right;
 		color: var(--primary-color);
+
+		@include xxs {
+			font-size: x-large;
+		}
+
+		@include xs {
+			font-size: xx-large;
+		}
 
 		&::selection {
 			color: var(--on-primary-color);

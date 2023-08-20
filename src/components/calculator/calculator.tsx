@@ -6,9 +6,12 @@ import {CalculatorOutput} from '../calculator-output'
 
 import styles from './calculator.module.scss'
 
+const DEFAULT_INPUT_VALUE = '0'
+const DEFAULT_OUTPUT_VALUE = '0'
+
 export function Calculator() {
-	const [input, setInput] = useState<string>('')
-	const [output, setOutput] = useState<string>('00')
+	const [input, setInput] = useState<string>(DEFAULT_INPUT_VALUE)
+	const [output, setOutput] = useState<string>(DEFAULT_OUTPUT_VALUE)
 
 	const append = useCallback(
 		(value: number | string) => {
@@ -24,10 +27,9 @@ export function Calculator() {
 		[append]
 	)
 
-	const handleClear = useCallback(() => {
+	const handleAllClear = useCallback(() => {
 		setInput('')
-		setOutput('0')
-	}, [setInput, setOutput])
+	}, [setInput])
 
 	const handleBackspace = useCallback(() => {
 		setInput((prev) => prev.slice(0, -1))
@@ -66,7 +68,7 @@ export function Calculator() {
 		<CalculatorOperatorCell
 			data-col-start='col-3'
 			operator='AC'
-			handleOperation={handleClear}
+			handleOperation={handleAllClear}
 		/>,
 		<CalculatorOperatorCell
 			operator='&larr;'

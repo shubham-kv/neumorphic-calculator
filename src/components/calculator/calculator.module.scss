@@ -1,7 +1,46 @@
+@import '../../styles/mixins';
+
+:root {
+	--calculator-padding: 1.2rem;
+	--grid-cell-size: calc(3 * 16px);
+	--grid-gap: calc(1 * 16px);
+
+	--cell-shadow-offset: 4px;
+	--cell-shadow-spread: 16px;
+
+	@include xxs {
+		--calculator-padding: 1.5rem;
+		--grid-cell-size: calc(3.5 * 16px);
+		--grid-gap: calc(1.25 * 16px);
+
+		--cell-shadow-offset: 6px;
+		--cell-shadow-spread: 24px;
+	}
+
+	@include xs {
+		--calculator-padding: 1.8rem;
+		--grid-cell-size: calc(4.5 * 16px);
+		--grid-gap: calc(1.75 * 16px);
+
+		--cell-shadow-offset: 6px;
+		--cell-shadow-spread: 28px;
+	}
+
+	@include sm {
+		--calculator-padding: 2rem;
+
+		--grid-cell-size: calc(4.75 * 16px);
+		--grid-gap: calc(1.8 * 16px);
+
+		--cell-shadow-offset: 8px;
+		--cell-shadow-spread: 32px;
+	}
+}
 
 .calculator {
 	width: max-content;
-	padding: 1.75rem;
+	padding: var(--calculator-padding);
+
 	margin-top: 80px;
 	border-radius: 1.5rem;
 
@@ -18,9 +57,9 @@
 
 	.inputWrapper {
 		display: grid;
-		grid-template-columns: repeat(4, 4rem);
-		gap: 1.5rem;
-
+		grid-template-columns: repeat(4, var(--grid-cell-size));
+		gap: var(--grid-gap);
+		transition: all ease-out 0.2s;
 		user-select: none;
 	}
 }
