@@ -15,7 +15,7 @@ export function CalculatorOperatorCell(props: Props) {
 			data-col-start={props['data-col-start']}
 		>
 			<button
-				className={styles.cell}
+				className={`noTapHighlighting ${styles.cell} `}
 				onClick={() => handleOperation()}
 			>
 				{operator}

@@ -1,4 +1,5 @@
-import {useCallback, useState} from 'react'
+import {useState} from 'react'
+import {evaluateExpression} from '../../../lib/expression-evaluator'
 
 import {CalculatorOperandCell} from '../calculator-operand-cell'
 import {CalculatorOperatorCell} from '../calculator-operator-cell'
@@ -6,63 +7,53 @@ import {CalculatorOutput} from '../calculator-output'
 
 import styles from './calculator.module.scss'
 
-const DEFAULT_INPUT_VALUE = '0'
-const DEFAULT_OUTPUT_VALUE = '0'
+const Defaults = Object.freeze({
+	input: '',
+	output: '00'
+})
 
 export function Calculator() {
-	const [input, setInput] = useState<string>(DEFAULT_INPUT_VALUE)
-	const [output, setOutput] = useState<string>(DEFAULT_OUTPUT_VALUE)
+	const [input, setInput] = useState<string>(Defaults.input)
+	const [output, setOutput] = useState<string>(Defaults.output)
 
-	const append = useCallback(
-		(value: number | string) => {
-			setInput((prev) => `${prev}${value}`)
-		},
-		[setInput]
-	)
+	const appendInput = (value: string | number) => {
+		setInput((prev) => `${prev}${value}`)
 
-	const handleNumberInput = useCallback(
-		(value: number) => {
-			append(value);
-		},
-		[append]
-	)
-
-	const handleAllClear = useCallback(() => {
-		setInput('')
-	}, [setInput])
-
-	const handleBackspace = useCallback(() => {
-		setInput((prev) => prev.slice(0, -1))
-	}, [setInput])
-
-	const handleEvaluation = useCallback(() => {
-		const result = eval(input)
-
-		if(typeof result === 'number') {
-			const sliced = result.toString().slice(0, 16)
-			setOutput(sliced)
-		} else if(typeof result === 'undefined') {
-			setOutput('0')
+		if (input === Defaults.input) {
+			setOutput(`${value}`)
+		} else {
+			setOutput((prev) => `${prev}${value}`)
 		}
+	}
 
-		setInput('')
-	}, [input, setOutput, setInput])
+	const handleAllClear = () => {
+		setInput(Defaults.input)
+		setOutput(Defaults.output)
+	}
 
-	const handleDivision = useCallback(() => {
-		append('/')
-	}, [append])
+	const handleBackspace = () => {
+		setInput((prev) => {
+			const newValue = prev.slice(0, -1)
+			return newValue ? newValue : Defaults.input
+		})
+		setOutput((prev) => {
+			const newValue = prev.slice(0, -1)
+			return newValue ? newValue : Defaults.output
+		})
+	}
 
-	const handleMultiplication = useCallback(() => {
-		append('*')
-	}, [append])
+	const handleEvaluation = () => {
+		const result = evaluateExpression(input)
 
-	const handleAddition = useCallback(() => {
-		append('+')
-	}, [append])
-
-	const handleSubtraction = useCallback(() => {
-		append('-')
-	}, [append])
+		if (typeof result === 'number') {
+			const sliced = result.toString().slice(0, 16)
+			setInput(sliced)
+			setOutput(sliced)
+		} else {
+			setOutput(Defaults.output)
+			setInput(Defaults.input)
+		}
+	}
 
 	const cells = [
 		<CalculatorOperatorCell
@@ -71,68 +62,68 @@ export function Calculator() {
 			handleOperation={handleAllClear}
 		/>,
 		<CalculatorOperatorCell
-			operator='&larr;'
+			operator={<img src={'/assets/left-arrow.svg'} />}
 			handleOperation={handleBackspace}
 		/>,
 
 		<CalculatorOperandCell
 			value={7}
-			handleInput={handleNumberInput}
+			handleInput={appendInput}
 		/>,
 		<CalculatorOperandCell
 			value={8}
-			handleInput={handleNumberInput}
+			handleInput={appendInput}
 		/>,
 		<CalculatorOperandCell
 			value={9}
-			handleInput={handleNumberInput}
+			handleInput={appendInput}
 		/>,
 		<CalculatorOperatorCell
 			operator='&#x2215;'
-			handleOperation={handleDivision}
+			handleOperation={() => appendInput('/')}
 		/>,
 
 		<CalculatorOperandCell
 			value={4}
-			handleInput={handleNumberInput}
+			handleInput={appendInput}
 		/>,
 		<CalculatorOperandCell
 			value={5}
-			handleInput={handleNumberInput}
+			handleInput={appendInput}
 		/>,
 		<CalculatorOperandCell
 			value={6}
-			handleInput={handleNumberInput}
+			handleInput={appendInput}
 		/>,
 		<CalculatorOperatorCell
 			operator='&times;'
-			handleOperation={handleMultiplication}
+			handleOperation={() => appendInput('*')}
 		/>,
 
 		<CalculatorOperandCell
 			value={1}
-			handleInput={handleNumberInput}
+			handleInput={appendInput}
 		/>,
 		<CalculatorOperandCell
 			value={2}
-			handleInput={handleNumberInput}
+			handleInput={appendInput}
 		/>,
 		<CalculatorOperandCell
 			value={3}
-			handleInput={handleNumberInput}
+			handleInput={appendInput}
 		/>,
 		<CalculatorOperatorCell
 			operator='+'
-			handleOperation={handleAddition}
+			handleOperation={() => appendInput('+')}
 		/>,
 
 		<CalculatorOperatorCell
 			operator='&#x2219;'
-			handleOperation={() => append('.')}
+			handleOperation={() => appendInput('.')}
 		/>,
 		<CalculatorOperandCell
 			value={0}
-			handleInput={handleNumberInput}
+			handleInput={appendInput}
 		/>,
 		<CalculatorOperatorCell
 			operator='='
@@ -140,7 +131,7 @@ export function Calculator() {
 		/>,
 		<CalculatorOperatorCell
 			operator='&minus;'
-			handleOperation={handleSubtraction}
+			handleOperation={() => appendInput('-')}
 		/>
 	]
 
@@ -150,9 +141,7 @@ export function Calculator() {
 				<CalculatorOutput output={String(output)} />
 			</div>
 
-			<div className={styles.inputWrapper}>
-				{cells}
-			</div>
+			<div className={styles.inputWrapper}>{cells}</div>
 		</div>
 	)
 }
