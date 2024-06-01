@@ -4,7 +4,7 @@ import {numbers, additiveOperators, multiplicativeOperators} from './constants'
 import {Operator} from './enums'
 
 /**
- * Parses expressions consisting numeric literals & binary operations.
+ * Parses only numeric & binary expression.
  */
 export function parseExpression(expression: string): INode | undefined {
 	if (!expression) {
