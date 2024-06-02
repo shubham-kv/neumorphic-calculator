@@ -39,7 +39,7 @@
 			outline: 3px solid var(--primary-color);
 		}
 
-		&:active {
+		&:active, &.cellActive {
 			box-shadow: none !important;
 		}
 	}
