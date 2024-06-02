@@ -17,7 +17,7 @@
 
 		color: var(--primary-color);
 		background-color: var(--shade-intermediate);
-		transition: box-shadow 0.2s ease-out, outline 0.1s ease;
+		transition: box-shadow 0.1s ease-out, outline 0.1s ease;
 
 		box-shadow:
 			calc(-1 * var(--cell-shadow-offset)) calc(-1 * var(--cell-shadow-offset)) var(--cell-shadow-spread) var(--shade-light),
@@ -46,7 +46,7 @@
 			outline: 3px solid var(--primary-color);
 		}
 
-		&:active {
+		&:active, &.cellActive {
 			box-shadow: none !important;
 		}
 	}

@@ -1,0 +1,8 @@
+
+|===========>
+| GRAMMAR
+|=============>
+
+expression  -> term (('+'|'-') term)*
+term        -> atom (('*'|'/') atom)*
+atom        -> ('+' | '-')? NUMBER

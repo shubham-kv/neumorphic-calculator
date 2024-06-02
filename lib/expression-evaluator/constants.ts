@@ -1,7 +1,7 @@
 import {Operator} from './enums'
 
-export const additiveOperators: Operator[] = [Operator['+'], Operator['-']]
-export const multiplicativeOperators: Operator[] = [Operator['*'], Operator['/']]
+export const additiveOperators: string[] = [Operator['+'], Operator['-']]
+export const multiplicativeOperators: string[] = [Operator['*'], Operator['/']]
 
 export const numbers: string[] = [
 	'0',
