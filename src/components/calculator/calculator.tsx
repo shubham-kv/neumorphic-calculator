@@ -1,9 +1,11 @@
-import {useState} from 'react'
-import {evaluateExpression} from '../../../lib/expression-evaluator'
+import {useCallback, useEffect, useState} from 'react'
+import {evaluateExpression} from '../../../lib'
 
 import {CalculatorOperandCell} from '../calculator-operand-cell'
 import {CalculatorOperatorCell} from '../calculator-operator-cell'
 import {CalculatorOutput} from '../calculator-output'
+
+import {operandKeys, operatorKeys} from '../../constants'
 
 import styles from './calculator.module.scss'
 
@@ -16,53 +18,87 @@ export function Calculator() {
 	const [input, setInput] = useState<string>(Defaults.input)
 	const [output, setOutput] = useState<string>(Defaults.output)
 
-	const appendInput = (value: string | number) => {
-		setInput((prev) => `${prev}${value}`)
+	const appendInput = useCallback(
+		(value: string | number) => {
+			setInput((prev) => `${prev}${value}`)
 
-		if (input === Defaults.input) {
-			setOutput(`${value}`)
-		} else {
-			setOutput((prev) => `${prev}${value}`)
-		}
-	}
+			if (input === Defaults.input) {
+				setOutput(`${value}`)
+			} else {
+				setOutput((prev) => `${prev}${value}`)
+			}
+		},
+		[input]
+	)
 
 	const handleAllClear = () => {
 		setInput(Defaults.input)
 		setOutput(Defaults.output)
 	}
 
-	const handleBackspace = () => {
+	const handleBackspace = useCallback(() => {
 		setInput((prev) => {
 			const newValue = prev.slice(0, -1)
 			return newValue ? newValue : Defaults.input
 		})
-		setOutput((prev) => {
-			const newValue = prev.slice(0, -1)
-			return newValue ? newValue : Defaults.output
-		})
-	}
 
-	const handleEvaluation = () => {
+		if (input === Defaults.input) {
+			setOutput(Defaults.output)
+		} else {
+			setOutput((prev) => {
+				const newValue = prev.slice(0, -1)
+				return newValue ? newValue : Defaults.output
+			})
+		}
+	}, [input])
+
+	const handleEvaluation = useCallback(() => {
 		const result = evaluateExpression(input)
 
 		if (typeof result === 'number') {
-			const sliced = result.toString().slice(0, 16)
-			setInput(sliced)
-			setOutput(sliced)
+			const formatter = new Intl.NumberFormat()
+			const resultString = formatter.format(result)
+
+			setInput(result.toString())
+			setOutput(resultString)
 		} else {
 			setOutput(Defaults.output)
 			setInput(Defaults.input)
 		}
-	}
+	}, [input])
+
+	useEffect(() => {
+		const keyupListener = (e: KeyboardEvent) => {
+			if (operandKeys.includes(e.key)) {
+				appendInput(e.key)
+			} else if (operatorKeys.includes(e.key)) {
+				if (e.key === '=') {
+					handleEvaluation()
+				} else if (e.key === 'Backspace') {
+					handleBackspace()
+				} else {
+					appendInput(e.key)
+				}
+			}
+		}
+
+		addEventListener('keyup', keyupListener)
+
+		return () => {
+			removeEventListener('keyup', keyupListener)
+		}
+	}, [appendInput, handleEvaluation, handleBackspace])
 
 	const cells = [
 		<CalculatorOperatorCell
 			data-col-start='col-3'
 			operator='AC'
+			operatorKey=''
 			handleOperation={handleAllClear}
 		/>,
 		<CalculatorOperatorCell
 			operator={<img src={'/assets/left-arrow.svg'} />}
+			operatorKey='Backspace'
 			handleOperation={handleBackspace}
 		/>,
 
@@ -79,6 +115,7 @@ export function Calculator() {
 			handleInput={appendInput}
 		/>,
 		<CalculatorOperatorCell
+			operatorKey='/'
 			operator='&#x2215;'
 			handleOperation={() => appendInput('/')}
 		/>,
@@ -97,6 +134,7 @@ export function Calculator() {
 		/>,
 		<CalculatorOperatorCell
 			operator='&times;'
+			operatorKey='*'
 			handleOperation={() => appendInput('*')}
 		/>,
 
@@ -114,11 +152,13 @@ export function Calculator() {
 		/>,
 		<CalculatorOperatorCell
 			operator='+'
+			operatorKey='+'
 			handleOperation={() => appendInput('+')}
 		/>,
 
 		<CalculatorOperatorCell
 			operator='&#x2219;'
+			operatorKey=''
 			handleOperation={() => appendInput('.')}
 		/>,
 		<CalculatorOperandCell
@@ -127,10 +167,12 @@ export function Calculator() {
 		/>,
 		<CalculatorOperatorCell
 			operator='='
+			operatorKey='='
 			handleOperation={handleEvaluation}
 		/>,
 		<CalculatorOperatorCell
 			operator='&minus;'
+			operatorKey='-'
 			handleOperation={() => appendInput('-')}
 		/>
 	]
