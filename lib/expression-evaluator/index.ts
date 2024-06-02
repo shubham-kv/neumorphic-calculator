@@ -1,8 +1,9 @@
-import {parseExpression} from './parser'
 import {evaluate} from './evaluator'
+import {ExpressionParser} from './expression-parser'
 
 export function evaluateExpression(expression: string) {
-	const ast = parseExpression(expression)
+	const parser = new ExpressionParser()
+	const ast = parser.parse(expression)
 	const result = evaluate(ast)
 	return result
 }

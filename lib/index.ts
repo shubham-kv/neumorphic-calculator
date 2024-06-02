@@ -1,1 +1,1 @@
-export {evaluateExpression as expressionEvaluator} from './expression-evaluator'
+export {evaluateExpression} from './expression-evaluator'
